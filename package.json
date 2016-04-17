@@ -1,0 +1,27 @@
+{
+  "name": "bt",
+  "version": "1.0.0",
+  "description": "Cross platform tunneling utility package",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smaldeniya/bt.git"
+  },
+  "keywords": [
+    "tunneling",
+    "cross",
+    "platform",
+    "ssh",
+    "remote",
+    "desktop"
+  ],
+  "author": "Sahan Maldeniya",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/smaldeniya/bt/issues"
+  },
+  "homepage": "https://github.com/smaldeniya/bt#readme"
+}
