@@ -7,9 +7,9 @@ var platform = process.platform;
 /**
  *
  * @param options
- * @param done Callback with error
+ * @param error Callback with error
  */
-var createRemoteTunnle = function (options, done) {
+var createRemoteTunnle = function (options, error) {
     var knownHostfile = options.knownHost ? options.knownHost : "/dev/null";
     var userName = options.password ? options.username + ":" + options.password : options.username;
 
@@ -19,9 +19,9 @@ var createRemoteTunnle = function (options, done) {
 
     exec(tunnleCommand, function (err, stdout, stderr) {
         if(err) {
-            done(err);
+            error(err);
         } else {
-            done(false);
+            error(false);
         }
     })
 };
@@ -30,10 +30,26 @@ var createRemoteTunnle = function (options, done) {
 /**
  *
  * @param options
- * @param done Callback with error
+ * @param error Callback with error
  */
-var openRemoteTernminal = function (options, done) {
+var openRemoteTernminal = function (options, error) {
+    var knownHostfile = options.knownHost ? options.knownHost : "/dev/null";
 
+    var tunnleLocalhostCommand = util.format(
+        config.os[platform].ssh.tunnle_localhost_cmd, knownHostfile, options.localPort
+    );
+
+    var openTerminalCommand = util.format(
+        config.os[platform].ssh.terminal_cmd, tunnleLocalhostCommand
+    );
+
+    exec(openTerminalCommand, function (err, stdout, stderr) {
+        if(err) {
+            error(err);
+        } else {
+            error(false);
+        }
+    });
 };
 
 
@@ -43,7 +59,17 @@ var openRemoteTernminal = function (options, done) {
  * @param done Callback with error
  */
 var destroyTunnle = function (options, done) {
+    var destroyCommand = util.format(
+        config.os[platform].ssh.destroy_cmd, options.localPort
+    );
 
+    exec(destroyCommand, function (err, stdout, stderr) {
+        if(err) {
+            done(err)
+        } else {
+            done(false);
+        }
+    })
 }
 
 
@@ -52,8 +78,18 @@ var destroyTunnle = function (options, done) {
  * @param options
  * @param done Callback with error
  */
-var openRemoteDesktop = function (options, done) {
+var openRemoteDesktop = function (options, error) {
+    var openRemoteDesktopCommand = util.format(
+        config.os.linux.vnc.vnc_cmd, options.localPort
+    );
 
+    exec(openRemoteDesktopCommand, function (err, stdout, stderr) {
+        if(err) {
+            error(err);
+        } else {
+            error(false);
+        }
+    });
 };
 
 module.exports = {
