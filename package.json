@@ -18,6 +18,11 @@
     "remote",
     "desktop"
   ],
+  "dependencies": {
+      "underscore": "^1.8.3",
+      "util": "^0.10.3"
+  },
+
   "author": "Sahan Maldeniya",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
