@@ -80,7 +80,7 @@ var destroyTunnle = function (options, done) {
  */
 var openRemoteDesktop = function (options, error) {
     var openRemoteDesktopCommand = util.format(
-        config.os.linux.vnc.vnc_cmd, options.localPort
+        config.os[platform].vnc.vnc_cmd, options.localPort
     );
 
     exec(openRemoteDesktopCommand, function (err, stdout, stderr) {

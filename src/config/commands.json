@@ -10,6 +10,17 @@
             "vnc" : {
                 "vnc_cmd" : "vinagre --vnc-scale localhost:%s"
             }
+        },
+        "darwin": {
+            "ssh" : {
+                "ssh_tunnle_cmd" : "ssh -C -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -L %s:localhost:%s -N -f %s@%s",
+                "tunnle_localhost_cmd" : "ssh -X -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes root@localhost -p %s",
+                "terminal_cmd" : "open -n -W ssh://root@localhost:%s",
+                "destroy_cmd" : "lsof -n -i 4TCP:%s | grep LISTEN | head -n 1 | awk '{print $2}' | xargs kill -9"
+            },
+            "vnc" : {
+                "vnc_cmd" : "open -n -W vnc://localhost:%s"
+            }
         }
     }
 }
