@@ -4,6 +4,10 @@ var util = require('util');
 var config = require('./config/commands.json');
 var platform = process.platform;
 
+const WINDOWS = "win32";
+const MAC_OS = "darwin";
+const LINUX = "linux";
+
 /**
  *
  * @param options
@@ -14,8 +18,16 @@ var createRemoteTunnle = function (options, error) {
     var userName = options.password ? options.username + ":" + options.password : options.username;
 
     var tunnleCommand = util.format(config.os[platform].ssh.ssh_tunnle_cmd,
-        knownHostfile, options.localPort, options.remotePort, userName, options.remoteHost
+        options.sshKey ,knownHostfile, options.localPort, options.remotePort, userName, options.remoteHost
     );
+
+    if(platform === WINDOWS) {
+        tunnleCommand = util.format(config.os[platform].ssh.ssh_tunnle_cmd,
+            options.sshKey, userName, options.remoteHost, options.localPort, options.remotePort
+        );
+    }
+
+    console.log(tunnleCommand)
 
     exec(tunnleCommand, function (err, stdout, stderr) {
         if(err) {
@@ -33,23 +45,59 @@ var createRemoteTunnle = function (options, error) {
  * @param error Callback with error
  */
 var openRemoteTernminal = function (options, error) {
-    var knownHostfile = options.knownHost ? options.knownHost : "/dev/null";
+    if(platform === LINUX) {
+        var knownHostfile = options.knownHost ? options.knownHost : "/dev/null";
 
-    var tunnleLocalhostCommand = util.format(
-        config.os[platform].ssh.tunnle_localhost_cmd, knownHostfile, options.localPort
-    );
+        var tunnleLocalhostCommand = util.format(
+            config.os[LINUX].ssh.tunnle_localhost_cmd, options.sshKey, knownHostfile, options.localPort
+        );
 
-    var openTerminalCommand = util.format(
-        config.os[platform].ssh.terminal_cmd, tunnleLocalhostCommand
-    );
+        console.log(tunnleLocalhostCommand)
 
-    exec(openTerminalCommand, function (err, stdout, stderr) {
-        if(err) {
-            error(err);
-        } else {
-            error(false);
-        }
-    });
+        var openTerminalCommand = util.format(
+            config.os[LINUX].ssh.terminal_cmd, tunnleLocalhostCommand
+        );
+
+        console.log(openTerminalCommand)
+
+        exec(openTerminalCommand, function (err, stdout, stderr) {
+            if(err) {
+                error(err);
+            } else {
+                error(false);
+            }
+        });
+    } else if(platform === WINDOWS) {
+        var openTerminalCommand = util.format(
+            config.os[WINDOWS].ssh.terminal_cmd, options.localPort
+        );
+
+        console.log(openTerminalCommand)
+
+        exec(openTerminalCommand, function (err, stdout, stderr) {
+            if(err) {
+                error(err);
+            } else {
+                error(false);
+            }
+        });
+    } else if(platform === MAC_OS) {
+        var openTerminalCommand = util.format(
+            config.os[MAC_OS].ssh.terminal_cmd, options.localPort
+        );
+
+        console.log(openTerminalCommand)
+
+        exec(openTerminalCommand, function (err, stdout, stderr) {
+            if(err) {
+                error(err);
+            } else {
+                error(false);
+            }
+        });
+    } else {
+        error("platform not supported : " + platform);
+    }
 };
 
 

@@ -2,8 +2,8 @@
     "os" : {
         "linux": {
             "ssh" : {
-                "ssh_tunnle_cmd" : "ssh -C -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -L %s:localhost:%s -N -f %s@%s",
-                "tunnle_localhost_cmd" : "ssh -X -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes root@localhost -p %s",
+                "ssh_tunnle_cmd" : "ssh -i %s -C -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -L %s:localhost:%s -N -f %s@%s",
+                "tunnle_localhost_cmd" : "ssh -i %s -X -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes root@localhost -p %s",
                 "terminal_cmd" : "gnome-terminal --disable-factory -x %s",
                 "destroy_cmd" : "lsof -n -i 4TCP:%s | grep LISTEN | head -n 1 | awk '{print $2}' | xargs kill -9"
             },
@@ -13,13 +13,23 @@
         },
         "darwin": {
             "ssh" : {
-                "ssh_tunnle_cmd" : "ssh -C -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -L %s:localhost:%s -N -f %s@%s",
-                "tunnle_localhost_cmd" : "ssh -X -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes root@localhost -p %s",
+                "ssh_tunnle_cmd" : "ssh -i %s -C -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -L %s:localhost:%s -N -f %s@%s",
+                "tunnle_localhost_cmd" : "ssh -i %s -X -o UserKnownHostsFile=%s -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes root@localhost -p %s",
                 "terminal_cmd" : "open -n -W ssh://root@localhost:%s",
                 "destroy_cmd" : "lsof -n -i 4TCP:%s | grep LISTEN | head -n 1 | awk '{print $2}' | xargs kill -9"
             },
             "vnc" : {
                 "vnc_cmd" : "open -n -W vnc://localhost:%s"
+            }
+        },
+        "win32": {
+            "ssh" : {
+                "ssh_tunnle_cmd" : "cmd /c START /MIN putty -ssh -i %s %s@%s -N -L %s:localhost:%s",
+                "terminal_cmd" : "putty -ssh root@localhost %s",
+                "destroy_cmd" : "for /F \"tokens=5\" %%P IN (\\'netstat -ano ^| find /i \"listening\" ^| find \"127.0.0.1:%s\"\\') DO taskkill /F /PID %%P"
+            },
+            "vnc" : {
+                "vnc_cmd" : "vncviewer localhost:%s -shared"
             }
         }
     }
